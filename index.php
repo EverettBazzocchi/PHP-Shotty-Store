@@ -13,7 +13,7 @@ if (isset($_SESSION['user'])) {
 
 <body>
     <?php require('functions/header.php') ?>
-        <main>
+        <main id="home">
             <?php if (isset($_SESSION['user'])): ?>
             <h1>Welcome,
                 <?php echo $_SESSION['user']['email']; ?>

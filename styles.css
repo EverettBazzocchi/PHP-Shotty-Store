@@ -11,12 +11,25 @@ html {
     color: var(--color-body-text);
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     color: var(--color-title-text);
 }
 
 main {
-    margin: auto 0;
-    max-width: 800px;
+    margin: 0 auto;
+    min-height: 50vh;
     background-color: var(--color-body-background);
+    padding: 20px;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
+main#home {
+    min-width: 300px;
+    width: 90%;
 }
