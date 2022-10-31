@@ -1,0 +1,22 @@
+:root {
+    --color-title-text: #ffffff;
+    --color-body-text: #f5f5f5;
+    --color-background: #000000;
+    --color-body-background: #404040;
+    --color-header-background: #202020;
+}
+
+html {
+    background-color: var(--color-background);
+    color: var(--color-body-text);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--color-title-text);
+}
+
+main {
+    margin: auto 0;
+    max-width: 800px;
+    background-color: var(--color-body-background);
+}
