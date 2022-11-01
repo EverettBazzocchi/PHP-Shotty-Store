@@ -30,11 +30,12 @@ if (isset($_SESSION['user'])) {
 <?php require('functions/head.php') ?>
 
 <body>
-    <?= require('functions/header.php') ?>
-        <main>
+    <?php require('functions/header.php') ?>
+        <main id="login-page">
 
-            <form id="loginForm" action="./login.php" method="post">
-                <label for="usernameLogin">Username</label>
+            <form id="login-form" action="./login.php" method="post">
+                <h3>Login</h3>
+                <label for="usernameLogin">Email</label>
                 <input type="text" name="usernameLogin" id="username" required>
                 <label for="password">Password</label>
                 <input type="password" name="password" id="password" required>
@@ -42,12 +43,13 @@ if (isset($_SESSION['user'])) {
             </form>
 
 
-            <form id="registerForm" action="./login.php" method="post">
-                <label for="usernameRegister">Username</label>
+            <form id="register-form" action="./login.php" method="post">
+                <h3>Register</h3>
+                <label for="usernameRegister">Email</label>
                 <input type="text" name="usernameRegister" id="username" required>
                 <label for="password">Password</label>
                 <input type="password" name="password" id="password" required>
-                <input type="submit" value="Login">
+                <input type="submit" value="Register">
             </form>
         </main>
 

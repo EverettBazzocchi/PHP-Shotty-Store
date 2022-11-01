@@ -59,7 +59,7 @@ div#TopNav {
 
 /* Path: src\Components\Components\Components/Banner.js */
 div#Banner {
-    margin-top: 10px;
+    margin-top: 30px;
     background-color: #aaa;
     width: 100vw;
     height: 250px;
@@ -295,4 +295,84 @@ main .store-header a.cart-link {
     margin-right: 15px;
 
     color: var(--color-body-text);
+}
+
+main#login-page {
+    width: fit-content;
+    min-width: 750px;
+    font-family: roboto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: fit-content;
+}
+
+main#login-page > form {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    box-sizing: border-box;
+    padding-bottom: 50px;
+}
+
+main#login-page form:first-child {
+    border-right: 1px solid #909090;
+}
+
+main#login-page > form > input {
+    color: whitesmoke;
+    width: 50%;
+    min-width: 150px;
+    height: 25px;
+    border-radius: 10px;
+    border: none;
+    margin: 10px;
+    padding: 0px 15px;
+    box-sizing: border-box;
+    font-size: 15px;
+    background-color: #202020;
+}
+
+main#login-page > form > input:focus {
+    outline: none;
+}
+
+main#login-page > form > input[type="submit"] {
+    color: whitesmoke;
+    width: 100px;
+    min-width: 50px;
+    height: 25px;
+    border-radius: 10px;
+    border: none;
+    margin: 10px;
+    padding: 0px 15px;
+    box-sizing: border-box;
+    font-size: 15px;
+    background-color: #202020;
+    cursor: pointer;
+}
+
+main#login-page > form > input[type="submit"]:hover {
+    background-color: #252525;
+}
+
+main#login-page > #login-form {
+    float: left;
+}
+
+main#login-page > #register-form {
+    float: right;
+}
+
+main#login-page > form > h3 {
+    height: 50px;
+    line-height: 50px;
+    width: 100%;
+    font-family: roboto;
+    font-size: 25px;
+    background-color: var(--color-header-background);
+    text-align: center;
+    margin-top: 0px;
 }
