@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 
 // defines the login for the database accounting for the different environments (my server, someones local machine)
@@ -30,6 +31,7 @@ function login($email, $password)
     try {
 
         $query = $db->prepare("SELECT * FROM Users WHERE email = :email");
+        var_dump($query);
         $query->bindParam(':email', $email);
         $query->execute();
 
@@ -77,13 +79,21 @@ function logout()
     header('Location: ../login.php');
 }
 
-function getProducts()
+function getProducts($product)
 {
     global $db;
-    $query = "SELECT * FROM Products";
-    $statement = $db->prepare($query);
-    $statement->execute();
-    $products = $statement->fetchAll();
+    $products = array();
+    if($product === "all") {
+        $query = $db->prepare("SELECT * FROM Products");
+        $query->execute();
+        $products = $query->fetchAll();
+    } else {
+        $query = $db->prepare("SELECT * FROM Products WHERE category = :category");
+        $query->bindParam(':category', $product);
+        $query->execute();
+        $products = $query->fetchAll();
+    }
+    
     return $products;
 }
 

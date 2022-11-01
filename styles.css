@@ -376,3 +376,114 @@ main#login-page > form > h3 {
     text-align: center;
     margin-top: 0px;
 }
+
+#products-wrapper {
+    margin: 0 auto;
+    padding: 15px;
+    width: fit-content;
+    min-width: 750px;
+    max-width: 1200px;
+    font-family: roboto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    height: fit-content;
+}
+
+#products-page {
+    margin: 0 auto;
+    width: fit-content;
+    min-width: 750px;
+    max-width: 1200px;
+    font-family: roboto;
+    height: fit-content;
+}
+
+.product-item {
+    position: relative;
+    margin: 10px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 215px;
+    height: 250px;
+    box-sizing: border-box;
+
+    border: 1px solid #909090;
+    border-radius: 10px;
+    background-image: url(https://assets.darklordbazz.com/img/shottyAssets/logo-back.png);
+    background-repeat: no-repeat;
+    background-blend-mode: normal;
+    background-position: center;
+    background-size: 150%;
+    transition: 0.3s ease-in-out;
+}
+
+
+.product-item:hover {
+    background-size: 170%;
+    transform: scale(1.05);
+}
+
+.product-item:hover > .blur {
+    backdrop-filter: brightness(0.9) blur(4px);
+}
+
+.product-item > .blur {
+    border-radius: 10px;
+    backdrop-filter: brightness(0.8) blur(7px);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s ease-in-out;
+}
+
+.product-item-title {
+    margin: 0;
+    position: absolute;
+    color: black;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background-color: #cccccc;
+    background-blend-mode: darken;
+    border-radius: 10px 10px 0px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-family: roboto;
+    text-transform: uppercase;
+    transition: 0.3s ease-in-out;
+}
+
+.product-item:hover .product-item-title {
+    background-color: #ffffff;
+}
+
+.product-item-price {
+    margin: 0;
+    position: absolute;
+    color: whitesmoke;
+    bottom: 0;
+    right: 0;
+    width: 40%;
+    height: 30px;
+    background-color: var(--color-background);
+    border-radius: 10px 0px 10px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-family: roboto;
+    text-transform: uppercase;
+    transition: 0.3s ease-in-out;
+}
+
+.product-item-price::before {
+    content: "$";
+}
