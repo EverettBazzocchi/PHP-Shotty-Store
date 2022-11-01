@@ -6,9 +6,177 @@
     --color-header-background: #202020;
 }
 
+/* Path: src\Components\Components\Components/TopNav.js */
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap");
+div#TopNav {
+    background-color: black;
+    width: 100vw;
+    height: 30px;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 100;
+}
+
+#TopNav h2 a.logout {
+    background-color: transparent;
+    color: white;
+    padding: 3px;
+    border-left: 1px solid whitesmoke;
+    margin-left: 3px !important;
+    font-size: 17px;
+    line-height: 20px;
+    cursor: pointer;
+}
+#TopNav h1,
+#TopNav h2 {
+    color: #f5f5f5;
+    font-family: Roboto;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 25px;
+    margin-left: 40px;
+    margin-right: 40px;
+    margin-top: 2px;
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
+}
+
+#TopNav h1 {
+    float: left;
+    text-transform: uppercase;
+}
+#TopNav h2 {
+    float: right;
+}
+
+#TopNav h2 a {
+    color: whitesmoke;
+    text-decoration: none;
+}
+
+/* Path: src\Components\Components\Components/Banner.js */
+div#Banner {
+    margin-top: 10px;
+    background-color: #aaa;
+    width: 100vw;
+    height: 250px;
+    background-image: url(https://assets.darklordbazz.com/img/shottyAssets/logo-back.png);
+    background-repeat: no-repeat;
+    background-blend-mode: normal;
+    background-position: center;
+    background-size: cover;
+}
+
+#Banner > #Blur {
+    backdrop-filter: brightness(0.5) blur(15px);
+    width: 100%;
+    height: 100%;
+}
+
+#Banner #Logo {
+    position: absolute;
+    padding-top: 0px;
+    height: 200px;
+    transform: scale(1);
+    animation: pulse 3s infinite;
+    left: 50%;
+    transform: translateY(0px) translateX(-50%);
+    z-index: 10;
+    margin: auto;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@keyframes pulse {
+    0% {
+        transform: translateY(0px) translateX(-50%);
+    }
+    50% {
+        transform: translateY(20px) translateX(-50%);
+    }
+    100% {
+        transform: translateY(0px) translateX(-50%);
+    }
+}
+
+/* Path: src\Components\Components\Components/Nav.js */
+
+header nav {
+    background-color: #434343;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#left-nav {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    max-width: 1000px;
+    padding-left: 0px;
+}
+
+#right-nav {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.nav li {
+    font-size: 25px;
+    font-family: "Roboto", sans-serif;
+    font-weight: bold;
+    list-style: none;
+    border-radius: 0px;
+    height: 50px;
+    align-items: center;
+    text-align: center;
+    width: 200px;
+    box-sizing: border-box;
+}
+
+header .nav a.active {
+    background-color: #252525;
+}
+header a.active li {
+    text-decoration: underline;
+}
+
+.nav a {
+    text-transform: uppercase;
+    color: whitesmoke;
+    text-decoration: none;
+    font-size: 17px;
+    line-height: 50px;
+    border-radius: 0px;
+}
+
+.nav a:hover {
+    background-color: #252525;
+}
+
 html {
+    margin: 0;
+    background-color: black;
     background-color: var(--color-background);
     color: var(--color-body-text);
+}
+
+body {
+    margin: 0;
+    background-color: black;
 }
 
 h1,
@@ -21,15 +189,110 @@ h6 {
 }
 
 main {
-    margin: 0 auto;
-    min-height: 50vh;
+    margin: 30px auto;
+    min-height: 30vh;
+    height: fit-content;
     background-color: var(--color-body-background);
-    padding: 20px;
     box-sizing: border-box;
     border-radius: 5px;
 }
 
 main#home {
     min-width: 300px;
-    width: 90%;
+    width: fit-content;
+}
+
+#home .container {
+    box-sizing: border-box;
+    width: 40vw;
+    margin: 0 50px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+#home .container .item {
+    margin: 10px auto;
+    min-width: 220px;
+    max-width: 370px;
+    height: 220px;
+    text-align: center;
+    aspect-ratio: 1/1;
+
+    border: 1px solid #909090;
+    border-radius: 20px;
+    background-image: url(https://assets.darklordbazz.com/img/shottyAssets/logo-back.png);
+    background-repeat: no-repeat;
+    background-blend-mode: normal;
+    background-position: center;
+    background-size: 150%;
+    transition: 0.3s ease-in-out;
+}
+
+#home .container .item:hover {
+    background-size: 170%;
+    transform: scale(1.05);
+}
+
+#home .container .item:hover > .blur {
+    backdrop-filter: brightness(0.9) blur(4px);
+}
+
+#home .container .item > .blur {
+    border-radius: 20px;
+    backdrop-filter: brightness(0.8) blur(7px);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s ease-in-out;
+    
+}
+
+main .container .item h3{
+    margin: 0;
+    font-size: 40px;
+    font-family: roboto;
+}
+
+main .container a {
+    text-decoration: none;
+    color: whitesmoke;
+}
+
+main .store-header {
+    font-family: roboto;
+    font-size: 25px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    background-color: var(--color-header-background);
+    color: var(--color-title-text);
+    height: 50px;
+}
+
+main .store-header .store-title {
+    margin: 10px;
+    line-height: 30px;
+    font-size: 25px;
+    width: fit-content;
+    float: left;
+    margin-left: 15px;
+    color: var(--color-title-text);
+}
+
+main .store-header a.cart-link {
+    margin: 10px;
+    text-decoration: none;
+    font-size: 20px;
+    line-height: 30px;
+    width: fit-content;
+    float: right;
+    margin-right: 15px;
+
+    color: var(--color-body-text);
 }
