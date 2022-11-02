@@ -8,3 +8,7 @@
 .vscode/*
 .vscode/
 .vscode
+
+vendor/
+vendor/*
+vendor

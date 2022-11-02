@@ -16,14 +16,14 @@ require('functions/api.php');
             <a class="cart-link" href="./shopping-cart.php">Shopping Cart</a>
         </div>
         <div class="container">
-            <a href="./products.php?cat=ranks">
+            <a href="./products/ranks">
                 <div class="item category">
                     <div class="blur">
                         <h3>Ranks</h3>
                     </div>
                 </div>
             </a>
-            <a href="./products.php?cat=items">
+            <a href="./products/items">
                 <div class="item category">
                     <div class="blur">
                         <h3>Items</h3>

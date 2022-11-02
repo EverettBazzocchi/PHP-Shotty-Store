@@ -26,7 +26,7 @@ if (isset($_GET['cat'])) {
             <?php for ($i = 0; $i < 5; $i++) { ?>
             <?php foreach (getProducts($category) as $product): ?>
             <a href="product.php?id=<?= $product['id'] ?>">
-                <div class="product-item" style="background-image: url(./uploads/images/<?= $product['image'] ?>)">
+                <div class="product-item" style="background-image: url(/project/uploads/images/<?= $product['image'] ?>)">
 
                     <div class="blur">
 
