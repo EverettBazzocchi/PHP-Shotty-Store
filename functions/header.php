@@ -2,13 +2,13 @@
     <div id="TopNav">
         <h1>Shotty Tech / Gaming</h1>
         <?php if (isset($_SESSION['user'])): ?>
-            <h2>Welcome, <?= $_SESSION['user']['email'] ?><a class="logout" href="./functions/logout.php">Logout</a></h2>
+            <h2>Welcome, <?= $_SESSION['user']['email'] ?><a class="logout" href="/project/functions/logout.php">Logout</a></h2>
         <?php else: ?>
-        <h2><a class="" href="./login.php">Store Login</a></h2>
+        <h2><a class="" href="/project/login.php">Store Login</a></h2>
         <?php endif; ?>
     </div>
     <div id="Banner">
-        <div id="Blur"><img id="Logo" src="https://assets.darklordbazz.com/img/shottyAssets/logo-back.png" alt="logo">
+        <div id="Blur"><img id="Logo" src="https://assets.darklordbazz.com/img/shottyAssets/logo-back2.png" alt="logo">
         </div>
 
     </div>

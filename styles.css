@@ -44,6 +44,8 @@ div#TopNav {
     width: fit-content;
 }
 
+
+
 #TopNav h1 {
     float: left;
     text-transform: uppercase;
@@ -63,7 +65,7 @@ div#Banner {
     background-color: #aaa;
     width: 100vw;
     height: 250px;
-    background-image: url(https://assets.darklordbazz.com/img/shottyAssets/logo-back.png);
+    background-image: url(https://assets.darklordbazz.com/img/shottyAssets/logo-back2.png);
     background-repeat: no-repeat;
     background-blend-mode: normal;
     background-position: center;
@@ -223,7 +225,7 @@ main#home {
 
     border: 1px solid #909090;
     border-radius: 20px;
-    background-image: url(https://assets.darklordbazz.com/img/shottyAssets/logo-back.png);
+    background-image: url(https://assets.darklordbazz.com/img/shottyAssets/logo-back2.png);
     background-repeat: no-repeat;
     background-blend-mode: normal;
     background-position: center;
@@ -239,6 +241,8 @@ main#home {
 #home .container .item:hover > .blur {
     backdrop-filter: brightness(0.9) blur(4px);
 }
+
+
 
 #home .container .item > .blur {
     border-radius: 20px;
@@ -268,7 +272,6 @@ main .store-header {
     font-size: 25px;
     font-weight: 700;
     text-transform: uppercase;
-    margin-bottom: 10px;
     margin-top: 10px;
     background-color: var(--color-header-background);
     color: var(--color-title-text);
@@ -301,13 +304,16 @@ main#login-page {
     width: fit-content;
     min-width: 750px;
     font-family: roboto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     height: fit-content;
 }
 
-main#login-page > form {
+main .forms{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+main#login-page .forms> form {
     width: 50%;
     display: flex;
     flex-direction: column;
@@ -315,13 +321,14 @@ main#login-page > form {
     align-items: center;
     box-sizing: border-box;
     padding-bottom: 50px;
+    height: 100%;
 }
 
 main#login-page form:first-child {
     border-right: 1px solid #909090;
 }
 
-main#login-page > form > input {
+main#login-page .forms> form > input {
     color: whitesmoke;
     width: 50%;
     min-width: 150px;
@@ -335,11 +342,11 @@ main#login-page > form > input {
     background-color: #202020;
 }
 
-main#login-page > form > input:focus {
+main#login-page .forms> form > input:focus {
     outline: none;
 }
 
-main#login-page > form > input[type="submit"] {
+main#login-page .forms> form > input[type="submit"] {
     color: whitesmoke;
     width: 100px;
     min-width: 50px;
@@ -354,19 +361,19 @@ main#login-page > form > input[type="submit"] {
     cursor: pointer;
 }
 
-main#login-page > form > input[type="submit"]:hover {
+main#login-page .forms> form > input[type="submit"]:hover {
     background-color: #252525;
 }
 
-main#login-page > #login-form {
+main#login-page .forms> #login-form {
     float: left;
 }
 
-main#login-page > #register-form {
+main#login-page .forms> #register-form {
     float: right;
 }
 
-main#login-page > form > h3 {
+main#login-page .forms> form > h3 {
     height: 50px;
     line-height: 50px;
     width: 100%;
@@ -412,7 +419,7 @@ main#login-page > form > h3 {
 
     border: 1px solid #909090;
     border-radius: 10px;
-    background-image: url(https://assets.darklordbazz.com/img/shottyAssets/logo-back.png);
+    background-image: url(https://assets.darklordbazz.com/img/shottyAssets/logo-back2.png);
     background-repeat: no-repeat;
     background-blend-mode: normal;
     background-position: center;
@@ -487,3 +494,97 @@ main#login-page > form > h3 {
 .product-item-price::before {
     content: "$";
 }
+
+.product-item:hover .product-item-price {
+    color: #ffffff;
+}
+
+.product-item:hover .product-item-price::before {
+    color: #ffffff;
+}
+
+#create-product-page {
+    margin: 0 auto;
+    width: fit-content;
+    min-width: 750px;
+    max-width: 1200px;
+    font-family: roboto;
+    height: fit-content;
+}
+
+#create-product-page > form {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    box-sizing: border-box;
+    padding-bottom: 50px;
+}
+
+#create-product-page > form input {
+    color: whitesmoke;
+    width: 50%;
+    min-width: 150px;
+    height: 25px;
+    border-radius: 10px;
+    border: none;
+    margin: 10px;
+    padding: 0px 15px;
+    box-sizing: border-box;
+    font-size: 15px;
+    background-color: #202020;
+}
+
+#create-product-page > form input:focus {
+    outline: none;
+}
+
+#create-product-page > form  input[type="submit"] {
+    color: whitesmoke;
+    width: 100px;
+    min-width: 50px;
+    height: 25px;
+    border-radius: 10px;
+    border: none;
+    margin: 10px;
+    padding: 0px 15px;
+    box-sizing: border-box;
+    font-size: 15px;
+    background-color: #202020;
+    cursor: pointer;
+}
+
+#create-product-page > form  input[type="submit"]:hover {
+    background-color: #252525;
+}
+
+.create-item-link {
+    color: whitesmoke;
+    text-decoration: underline;
+    font-size: 20px;
+    font-family: roboto;
+    text-transform: uppercase;
+    transition: 0.3s ease-in-out;
+    padding-right: 10px;
+    float: right;
+}
+
+.store-title > a {
+    text-decoration: none;
+    color: inherit;
+}
+
+*:focus {
+    outline: none;
+  }
+
+
+  .error {
+    color: red;
+    font-size: 16px;
+    font-family: roboto;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 5px;
+  }

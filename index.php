@@ -1,20 +1,16 @@
 <?php
 require('functions/api.php');
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 
-<?php require('functions/head.php') ?>
+<?php require($_SERVER['DOCUMENT_ROOT'] . '/project/functions/head.php') ?>
 
 <body>
     <?php require('functions/header.php') ?>
     <main id="home">
-        <div class="store-header">
-            <h2 class="store-title">Store</h2>
-            <a class="cart-link" href="./shopping-cart.php">Shopping Cart</a>
-        </div>
+        <?php require('functions/store_header.php') ?>
         <div class="container">
             <a href="./products/ranks">
                 <div class="item category">
