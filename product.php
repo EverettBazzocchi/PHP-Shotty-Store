@@ -1,4 +1,4 @@
-<?php 
+<?php
 require('./functions/api.php');
 
 if (isset($_GET['id'])) {
@@ -12,8 +12,6 @@ $product = getProduct($id);
 if (!$product) {
     header('Location: /project/products');
 }
-
-var_dump($product);
 
 if ($product['blocked'] === '1') {
     header('Location: /project/products');
@@ -31,9 +29,8 @@ if ($product['blocked'] === '1') {
 <body>
     <?php require('functions/header.php') ?>
     <main id="product-page">
-        <?php if($product['blocked'] === '0'): ?>
         <div id="product-wrapper">
-            <?php if(isset($_SESSION['user']) && ($_SESSION['user']['role'] >= 5 || $_SESSION['user']['id'] === $product['owner_id'])): ?>
+            <?php if (isset($_SESSION['user']) && ($_SESSION['user']['role'] >= 5 || $_SESSION['user']['id'] === $product['owner_id'])): ?>
             <form action="/project/functions/delete_product">
                 <input type="hidden" name="id" value="<?= $product['id'] ?>">
                 <input type="submit" value="Delete">
@@ -78,7 +75,6 @@ if ($product['blocked'] === '1') {
             <?php endforeach; ?>
         </div>
     </main>
-    <?php endif; ?>
 
 </body>
 

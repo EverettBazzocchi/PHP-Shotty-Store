@@ -2,9 +2,12 @@
 
 session_start();
 
-//require $_SERVER['DOCUMENT_ROOT'] . '/project/vendor/autoload.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/project/vendor/autoload.php';
+use Intervention\Image\ImageManager;
 
-//use Intervention\Image\ImageManager;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+
 
 $ip = "192.168.0.21";
 $email = "school_webdev2_22";
@@ -20,7 +23,7 @@ try {
 }
 
 
-function login($email, $password)
+function login(string $email, string $password): void
 {
     global $db;
 
@@ -34,8 +37,8 @@ function login($email, $password)
         $user = $query->fetch(PDO::FETCH_ASSOC);
 
         if (password_verify($password, $user['password'])) {
-            $_SESSION['user'] = $user;
-            header('Location: ./');
+            $_SESSION['email'] = $email;
+            header('Location: ./please_verify');
         } else
             throw new Exception("Incorrect Email or Password");
 
@@ -44,7 +47,7 @@ function login($email, $password)
     }
 }
 
-function createAccount($email, $password)
+function createAccount(string $email, string $password): void
 {
     global $db;
 
@@ -69,8 +72,88 @@ function createAccount($email, $password)
 
 }
 
+function sendVerifyEmail(string $email): void
+{
+    global $db;
 
-function logout()
+    $query = $db->prepare("SELECT * FROM Users WHERE email = :email");
+    $query->bindParam(':email', $email);
+    if (!$query->execute()) {
+        throw new Exception("Account not found");
+    }
+    $query = $query->fetch(PDO::FETCH_ASSOC);
+
+    if ($query['verified'] == 1) {
+        throw new Exception("Email already verified");
+    }
+
+    $token = bin2hex(random_bytes(16));
+
+    $mail = new PHPMailer(true);
+
+    try {
+        //Server settings
+        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+        $mail->isSMTP();
+        $mail->Host = 'smtppro.zoho.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'noreply@ihatethis.website';
+        $mail->Password = '2S(6XIpCt*uiLe.I';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port = 465;
+
+        // Email Settings
+        $mail->setFrom('noreply@ihatethis.website', 'Shotty Tech - No Reply');
+        $mail->addAddress($email);
+
+        // Content
+        $mail->isHTML(true);
+        $mail->Subject = 'Verify Your Email';
+        $mail->Body = "Please click the link below to verify your email: <a href='https://ihatethis.website/project/functions/verify_email.php?token=$token'>Verify Email</a>";
+        $mail->AltBody = "Please click the link below to verify your email: https://ihatethis.website/project/functions/verify_email.php?token=$token";
+        
+        $mail->send();
+
+        $query = $db->prepare("INSERT INTO Email_Verification (user_id, token) VALUES (:user_id, :verify_code)");
+        $query->bindParam(':user_id', $email);
+        $query->bindParam(':verify_code', $token);
+        $query->execute();
+
+    }catch (Exception $e) {
+        throw new Exception("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+    }
+}
+
+function testSMTP() : void
+{
+    $mail = new PHPMailer(true);
+
+    try {
+        //Server settings
+        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+        $mail->isSMTP();
+        $mail->Host = 'smtppro.zoho.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'noreply@ihatethis.website';
+        $mail->Password = '2S(6XIpCt*uiLe.I';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port = 465;
+
+        // Email Settings
+        $mail->setFrom('noreply@ihatethis.website', 'Shotty Tech - No Reply');
+        $mail->addAddress('contact@everettbazzocchi.ca');
+
+        // Content
+        $mail->Subject = 'Test';
+        $mail->Body = "Test Email";
+        $mail->send();
+
+    }catch (Exception $e) {
+        throw new Exception("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+    }
+}
+
+function logout(): void
 {
     session_unset();
 
@@ -79,42 +162,109 @@ function logout()
     header('Location: /project/login.php');
 }
 
-function getProducts($product, $search = NULL)
+function getProducts(string $category, string $search = null): array
 {
     global $db;
     $products = array();
-    if (!$product === "all") {
-        $query = $db->prepare("SELECT * FROM Products WHERE category = :category");
-        $query->bindParam(':category', $product);
-    } else {
+    if ($category == "all") {
         $query = $db->prepare("SELECT * FROM Products");
+    } else {
+        $query = $db->prepare("SELECT * FROM Products WHERE category = :category");
+        $query->bindParam(':category', $category);
     }
 
-    $query->execute();
-    $products = $query->fetchAll();
-
+    if ($query->execute()) {
+        $products = $query->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        throw new Exception("Something went wrong contact admin.");
+    }
     return $products;
 }
 
-function getProduct($product)
+function getProduct(int $id): bool|array
 {
     global $db;
     $query = $db->prepare("SELECT * FROM Products WHERE id = :id");
-    $query->bindParam(':id', $product);
+    $query->bindParam(':id', $id);
     if ($query->execute()) {
         $product = $query->fetch();
         return $product;
     } else {
-        return false;
+        throw new Exception("Product not found");
     }
 }
 
-function deleteProduct($id)
+function deleteProduct(int $id): void
 {
+    if (!(isset($_SESSION['user']) && (($_SESSION['user']['role'] >= 5)))) {
+        throw new Exception("You do not have permission to delete this product");
+    }
     global $db;
     $query = $db->prepare("UPDATE Products SET blocked = '1' WHERE id = :id");
     $query->bindParam(':id', $id);
-    return $query->execute();
+}
+
+function editProduct(array $product): void
+{
+    global $db;
+
+    getProduct($product['id']);
+
+    if (!(isset($_SESSION['user']) && (($_SESSION['user']['role'] >= 5)) || ($_SESSION['user']['id'] === $product['owner_id']))) {
+        throw new Exception("You do not have permission to edit this product");
+    }
+
+    $query = $db->prepare("UPDATE Products SET name = :name, description = :description, price = :price, category = :category, image = :image WHERE id = :id");
+    $query->bindParam(':id', $product['id']);
+    $query->bindParam(':name', $product['name']);
+    $query->bindParam(':description', $product['description']);
+    $query->bindParam(':price', $product['price']);
+    $query->bindParam(':category', $product['category']);
+    $query->bindParam(':image', $product['image']);
+
+    if (!$query->execute()) {
+        throw new Exception("Product not found");
+    } 
+}
+
+function uploadImage(array $image): string
+{
+    $imageFolder = $_SERVER['DOCUMENT_ROOT'] . '/project/uploads/images/';
+
+    $uploadFileType = strtolower(pathinfo(basename($image['name']), PATHINFO_EXTENSION));
+
+    $fileName = uniqid() . '.' . $uploadFileType;
+    $uploadFile = $imageFolder . $fileName;
+
+    // Check if image file is an image    
+    $check = getimagesize($image['tmp_name']);
+    if (!$check) {
+        throw new Exception("File is not an image");
+    }
+
+    // Check if file already exists
+    if (file_exists($uploadFile)) {
+        throw new Exception("Sorry, file already exists.");
+    }
+
+    // Check file extension
+    if (
+        $uploadFileType != "jpg" && $uploadFileType != "png" && $uploadFileType != "jpeg" && $uploadFileType != "gif"
+    ) {
+        throw new Exception("Sorry, only JPG, JPEG, PNG & GIF files are allowed.");
+    }
+
+    // Resizes images and uploads, returns the new file name
+    try {
+        $manager = new ImageManager();
+        $newImage = $manager->make($image['tmp_name']);
+        $newImage->resize(500, 500);
+        $newImage->save($uploadFile);
+
+        return $fileName;
+    } catch (Exception $e) {
+        throw $e;
+    }
 }
 
 function getShoppingCart()
@@ -126,7 +276,7 @@ function getShoppingCart()
     }
 }
 
-function getUserID()
+function getUserID(): int
 {
     if ($_SESSION['user']) {
         return $_SESSION['user']->id;
@@ -135,7 +285,7 @@ function getUserID()
     }
 }
 
-function getReviews($product_id)
+function getReviews(int $product_id): array
 {
     global $db;
     $query = "SELECT * FROM Reviews WHERE product_id = :product_id ORDER BY date_created DESC";
@@ -146,54 +296,14 @@ function getReviews($product_id)
     return $reviews;
 }
 
-function createProduct($products, $user_id)
+function createProduct(array $products, int $user_id): void
 {
+    if (!(isset($_SESSION['user']) && (($_SESSION['user']['role'] >= 5)))) {
+        throw new Exception("You do not have permission to create a product");
+    }
     global $db;
-    $error = "";
 
-    $target_dir = "uploads/images/";
-    $target_file = $target_dir . basename($_FILES['image']["name"]);
-    $uploadOk = 1;
-    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-    if (isset($_POST["submit"])) {
-        $check = getimagesize($_FILES["image"]["tmp_name"]);
-        if ($check !== false) {
-            echo "File is an image - " . $check["mime"] . ".";
-            $uploadOk = 1;
-        } else {
-            echo "File is not an image.";
-            $uploadOk = 0;
-        }
-    }
-
-    // Check if file already exists
-    if (file_exists($target_file)) {
-        echo "File already exists.";
-        $uploadOk = 0;
-    }
-
-    // Allow certain file formats
-    if (
-        $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-        && $imageFileType != "gif"
-    ) {
-        echo "Only JPG, JPEG, PNG & GIF files are allowed.";
-        $uploadOk = 0;
-    }
-
-    if ($uploadOk == 0) {
-        echo "An Error Occurred";
-    } else {
-        if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-            echo "The file " . htmlspecialchars(basename($_FILES["image"]["name"])) . " has been uploaded.";
-            //$manager = new ImageManager(['driver' => 'imagick']);
-            //$image = $manager->make($target_file)->resize(300, 300);
-            //$image->save($target_file);
-        } else {
-            echo "An Error Occurred";
-        }
-    }
+    $image = uploadImage($products['image']);
 
     $query = "INSERT INTO Products (image_text, owner_id, name, description, price, category, image) VALUES (:image_text, :user_id, :name, :description, :price, :category, :image)";
     $statement = $db->prepare($query);
@@ -201,10 +311,12 @@ function createProduct($products, $user_id)
     $statement->bindValue(':description', $products['description']);
     $statement->bindValue(':price', $products['price']);
     $statement->bindValue(':category', $products['category']);
-    $statement->bindValue(':image', $products['image']['name']);
+    $statement->bindValue(':image', $image);
     $statement->bindValue(':user_id', $user_id);
     $statement->bindValue(':image_text', $products['name']);
-    $statement->execute();
+    if (!$statement->execute()) {
+        throw new Exception("Something went wrong contact admin.");
+    }
 }
 
 

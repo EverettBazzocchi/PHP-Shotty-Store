@@ -24,7 +24,10 @@ if (isset($_POST['usernameRegister']) && isset($_POST['password'])) {
 
 
 
-function email($form) {
+function email(string $form) : string {
+    $email = "";
+    $type = "";
+
     if(isset($_POST['usernameRegister'])) {
         $email = $_POST['usernameRegister'];
         $type = "register";
@@ -32,7 +35,7 @@ function email($form) {
     else if(isset($_POST['usernameLogin'])) {
         $email = $_POST['usernameLogin'];
         $type = "login";
-    }
+    } 
 
     if($form == $type) {
         return $email;

@@ -2,6 +2,11 @@
 
 require('./functions/api.php');
 
+if ( !isset( $_SESSION['user'] ) && ( ( $_SESSION['user']['role'] < 4 ) ) ) {
+    header('Location: /project/products');
+}
+
+
 if (isset($_POST['name'])) {
     $name = $_POST['name'];
     $price = $_POST['price'];
@@ -46,14 +51,14 @@ if (isset($_POST['name'])) {
                 <textarea name="description" id="description" cols="30" rows="10" required></textarea>
             </div>
             <div class="form-group">
-                <label for="image">Image</label>
+                <label for="image">Image (1:1 aspect ratio for best quality)</label>
                 <input type="file" name="image" id="image" required>
             </div>
             <div class="form-group">
                 <label for="category">Category</label>
                 <select name="category" id="category" required>
-                    <option value="rank">Rank</option>
-                    <option value="item">Item</option>
+                    <option value="ranks">Rank</option>
+                    <option value="items">Item</option>
                 </select>
             </div>
 

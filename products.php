@@ -6,12 +6,17 @@ if (isset($_GET['cat'])) {
     if ($_GET['cat'] == '') {
         $category = 'all';
     } else {
-        $category = $_GET['cat'];
+        $category = strval($_GET['cat']);
     }
 } else {
     $category = "all";
 }
 
+if (isset($_GET['search'])) {
+    $search = strval($_GET['search']);
+} else {
+    $search = null;
+}
 ?>
 
 <!DOCTYPE html>
