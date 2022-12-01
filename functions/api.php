@@ -37,8 +37,7 @@ function login(string $email, string $password): void
         $user = $query->fetch(PDO::FETCH_ASSOC);
 
         if (password_verify($password, $user['password'])) {
-            $_SESSION['email'] = $email;
-            header('Location: ./please_verify');
+            $_SESSION['user'] = $user;
         } else
             throw new Exception("Incorrect Email or Password");
 
@@ -51,7 +50,6 @@ function createAccount(string $email, string $password): void
 {
     global $db;
 
-
     $hash = password_hash($password, PASSWORD_DEFAULT);
 
     try {
@@ -60,13 +58,12 @@ function createAccount(string $email, string $password): void
         $query->bindParam(':password', $hash);
         $query->execute();
 
-        login($email, $password);
+        header('Location: ./please_verify?email=' . $email);
     } catch (Exception $e) {
         if (str_contains($e->getMessage(), "SQLSTATE[23000]:")) {
             throw new Exception("Email already in use");
         } else {
-            echo "Connection failed: " . $e->getMessage();
-            throw new Exception("Something went wrong");
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -82,6 +79,7 @@ function sendVerifyEmail(string $email): void
         throw new Exception("Account not found");
     }
     $query = $query->fetch(PDO::FETCH_ASSOC);
+    $user_id = $query['id'];
 
     if ($query['verified'] == 1) {
         throw new Exception("Email already verified");
@@ -98,7 +96,8 @@ function sendVerifyEmail(string $email): void
         $mail->Host = 'smtppro.zoho.com';
         $mail->SMTPAuth = true;
         $mail->Username = 'noreply@ihatethis.website';
-        $mail->Password = '2S(6XIpCt*uiLe.I';
+
+        $mail->Password = require($_SERVER['DOCUMENT_ROOT'] . '/project/functions/key.php');
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->Port = 465;
 
@@ -114,14 +113,39 @@ function sendVerifyEmail(string $email): void
         
         $mail->send();
 
-        $query = $db->prepare("INSERT INTO Email_Verification (user_id, token) VALUES (:user_id, :verify_code)");
-        $query->bindParam(':user_id', $email);
+        $query = $db->prepare("INSERT INTO Email_Verification (user_id, verify_code) VALUES (:user_id, :verify_code)");
+        $query->bindParam(':user_id', $user_id);
         $query->bindParam(':verify_code', $token);
         $query->execute();
 
     }catch (Exception $e) {
-        throw new Exception("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+        throw new Exception($e->getMessage() . $mail->ErrorInfo );
     }
+}
+
+function verifyEmail(string $token) : void {
+    global $db;
+
+    $query = $db->prepare("SELECT * FROM Email_Verification WHERE verify_code = :token");
+    $query->bindParam(':token', $token);
+    if (!$query->execute()) {
+        throw new Exception("Invalid Token");
+    }
+    $query = $query->fetch(PDO::FETCH_ASSOC);
+
+    $query2 = $db->prepare("UPDATE Users SET verified = 1 WHERE id = :user_id");
+    $query2->bindParam(':user_id', $query['user_id']);
+    if (!$query2->execute()) {
+        throw new Exception("Invalid Token");
+    }
+
+    $query3 = $db->prepare("DELETE FROM Email_Verification WHERE verify_code = :token");
+    $query3->bindParam(':token', $token);
+    if (!$query3->execute()) {
+        throw new Exception("Invalid Token");
+    }
+
+    header('Location: ./login');
 }
 
 function testSMTP() : void
