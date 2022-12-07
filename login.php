@@ -16,6 +16,7 @@ if (isset($_POST['usernameRegister']) && isset($_POST['password'])) {
 } else if (isset($_POST['usernameLogin']) && isset($_POST['password'])) {
     try {
         login($_POST['usernameLogin'], $_POST['password']);
+        header('Location: ./');
 
     } catch (Exception $e) {
         $login_error = $e->getMessage();

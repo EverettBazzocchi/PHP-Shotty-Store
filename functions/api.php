@@ -14,7 +14,7 @@ $email = "school_webdev2_22";
 $password = "2S(6XIpCt*uiLe.I";
 $database = "SCHOOL_finalprojWD2";
 
-// connects to the database using the defined login
+// connects to the database using the defined login.
 try {
     $db = new PDO("mysql:host=$ip;dbname=$database", $email, $password);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -23,6 +23,13 @@ try {
 }
 
 
+/**
+ * Function to log the user in.
+ *
+ * @param  string $email
+ * @param  string $password
+ * @return void
+ */
 function login(string $email, string $password): void
 {
     global $db;
@@ -46,6 +53,13 @@ function login(string $email, string $password): void
     }
 }
 
+/**
+ * Function to create user account.
+ *
+ * @param  string $email
+ * @param  string $password
+ * @return void
+ */
 function createAccount(string $email, string $password): void
 {
     global $db;
@@ -69,6 +83,12 @@ function createAccount(string $email, string $password): void
 
 }
 
+/**
+ * Function to send a user a verification email.
+ *
+ * @param  string $email
+ * @return void
+ */
 function sendVerifyEmail(string $email): void
 {
     global $db;
@@ -110,7 +130,7 @@ function sendVerifyEmail(string $email): void
         $mail->Subject = 'Verify Your Email';
         $mail->Body = "Please click the link below to verify your email: <a href='https://ihatethis.website/project/functions/verify_email.php?token=$token'>Verify Email</a>";
         $mail->AltBody = "Please click the link below to verify your email: https://ihatethis.website/project/functions/verify_email.php?token=$token";
-        
+
         $mail->send();
 
         $query = $db->prepare("INSERT INTO Email_Verification (user_id, verify_code) VALUES (:user_id, :verify_code)");
@@ -118,12 +138,19 @@ function sendVerifyEmail(string $email): void
         $query->bindParam(':verify_code', $token);
         $query->execute();
 
-    }catch (Exception $e) {
-        throw new Exception($e->getMessage() . $mail->ErrorInfo );
+    } catch (Exception $e) {
+        throw new Exception($e->getMessage() . $mail->ErrorInfo);
     }
 }
 
-function verifyEmail(string $token) : void {
+/**
+ * Function that verifies the user's email.
+ *
+ * @param  string $token
+ * @return void
+ */
+function verifyEmail(string $token): void
+{
     global $db;
 
     $query = $db->prepare("SELECT * FROM Email_Verification WHERE verify_code = :token");
@@ -148,7 +175,13 @@ function verifyEmail(string $token) : void {
     header('Location: ./login');
 }
 
-function testSMTP() : void
+
+/**
+ * A function to test smtp.
+ *
+ * @return void
+ */
+function testSMTP(): void
 {
     $mail = new PHPMailer(true);
 
@@ -172,11 +205,16 @@ function testSMTP() : void
         $mail->Body = "Test Email";
         $mail->send();
 
-    }catch (Exception $e) {
+    } catch (Exception $e) {
         throw new Exception("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
     }
 }
 
+/**
+ * Logout function.
+ *
+ * @return void
+ */
 function logout(): void
 {
     session_unset();
@@ -186,14 +224,31 @@ function logout(): void
     header('Location: /project/login.php');
 }
 
-function getProducts(string $category, string $search = null): array
+
+/**
+ * getProducts
+ *
+ * @param  string $category
+ * @param  string $search = ""
+ * @return array
+ */
+function getProducts(string $category, string $sort = "price ASC"): array
 {
     global $db;
+
+    if (str_ends_with($sort, "ASC")) {
+        $order_by = "ORDER BY " . substr($sort, 0, strlen($sort) - 4) . " ASC;";
+    } else if (str_ends_with($sort, "DESC")) {
+        $order_by = "ORDER BY " . substr($sort, 0, strlen($sort) - 5) . " DESC;";
+    } else {
+        $order_by = "ORDER BY $sort;";
+    }
+
     $products = array();
     if ($category == "all") {
-        $query = $db->prepare("SELECT * FROM Products");
+        $query = $db->prepare("SELECT * FROM Products $order_by");
     } else {
-        $query = $db->prepare("SELECT * FROM Products WHERE category = :category");
+        $query = $db->prepare("SELECT * FROM Products WHERE category = :category $order_by");
         $query->bindParam(':category', $category);
     }
 
@@ -205,7 +260,13 @@ function getProducts(string $category, string $search = null): array
     return $products;
 }
 
-function getProduct(int $id): bool|array
+/**
+ * Function to get all products.
+ *
+ * @param  int $id
+ * @return array
+ */
+function getProduct(int $id): array |bool
 {
     global $db;
     $query = $db->prepare("SELECT * FROM Products WHERE id = :id");
@@ -218,16 +279,35 @@ function getProduct(int $id): bool|array
     }
 }
 
+
+/**
+ * Function to disable a specific product.
+ *
+ * @param  int $id
+ * @return void
+ */
 function deleteProduct(int $id): void
 {
     if (!(isset($_SESSION['user']) && (($_SESSION['user']['role'] >= 5)))) {
         throw new Exception("You do not have permission to delete this product");
     }
+
     global $db;
+
     $query = $db->prepare("UPDATE Products SET blocked = '1' WHERE id = :id");
     $query->bindParam(':id', $id);
+
+    if (!$query->execute()) {
+        throw new Exception("Something went wrong contact admin.");
+    }
 }
 
+/**
+ * Function to edit a product.
+ *
+ * @param  array $product
+ * @return void
+ */
 function editProduct(array $product): void
 {
     global $db;
@@ -248,9 +328,15 @@ function editProduct(array $product): void
 
     if (!$query->execute()) {
         throw new Exception("Product not found");
-    } 
+    }
 }
 
+/**
+ * Function that uploads an image to the server.
+ *
+ * @param  array $image
+ * @return string
+ */
 function uploadImage(array $image): string
 {
     $imageFolder = $_SERVER['DOCUMENT_ROOT'] . '/project/uploads/images/';
@@ -291,6 +377,12 @@ function uploadImage(array $image): string
     }
 }
 
+
+/**
+ * Returns users shopping cart.
+ *
+ * @return void
+ */
 function getShoppingCart()
 {
     if ($_SESSION['user']) {
@@ -300,6 +392,12 @@ function getShoppingCart()
     }
 }
 
+
+/**
+ * Function to return users id.
+ *
+ * @return int
+ */
 function getUserID(): int
 {
     if ($_SESSION['user']) {
@@ -309,6 +407,13 @@ function getUserID(): int
     }
 }
 
+
+/**
+ * Function to retrieve comments left on a specified product page.
+ *
+ * @param  int $product_id
+ * @return array
+ */
 function getReviews(int $product_id): array
 {
     global $db;
@@ -320,6 +425,13 @@ function getReviews(int $product_id): array
     return $reviews;
 }
 
+/**
+ * Funtion to create a product.
+ *
+ * @param  array $products
+ * @param  int $user_id
+ * @return void
+ */
 function createProduct(array $products, int $user_id): void
 {
     if (!(isset($_SESSION['user']) && (($_SESSION['user']['role'] >= 5)))) {

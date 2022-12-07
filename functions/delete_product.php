@@ -14,10 +14,11 @@ if (!$product) {
 }
 
 if (isset($_SESSION['user']) && (($_SESSION['user']['role'] >= 5) || ($_SESSION['user']['id'] === $product['owner_id']))) {
-    if (deleteProduct($id)) {
+    try {
+        deleteProduct($id);
         header('Location: /project/products');
-    } else {
-        echo "Error Deleting Product";
+    } catch (Exception $e) {
+        echo $e->getMessage();
     }
 }
 

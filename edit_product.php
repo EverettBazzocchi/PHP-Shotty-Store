@@ -3,6 +3,8 @@ require('./functions/api.php');
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
+} else if (isset($_POST['id'])) {
+    $id = $_POST['id'];
 } else {
     header('Location: /project/products');
 }
@@ -10,16 +12,16 @@ if (isset($_GET['id'])) {
 $product = getProduct($id);
 
 if (!$product) {
-    header('Location: /project/products');
+    echo 'Product not found.';
 }
 
-if (!(isset($_SESSION['user']) && (($_SESSION['user']['role'] >= 5) || ($_SESSION['user']['id'] === $product['owner_id'])))) {
-    header('Location: /project/products');
+if (!(isset($_SESSION['user']) && (($_SESSION['user']['role'] >= 4) || ($_SESSION['user']['id'] === $product['owner_id'])))) {
+    echo 'You do not have permission to edit this product.';
 }
 
 if (isset($_POST['name'])) {
-    if (!(isset($_SESSION['user']) && (($_SESSION['user']['role'] >= 5)))) {
-        header('Location: /project/products');
+    if (!(isset($_SESSION['user']) && (($_SESSION['user']['role'] >= 4)))) {
+        echo 'You do not have permission to edit this product6666.';
     }
     $name = $_POST['name'];
     $price = $_POST['price'];
@@ -28,6 +30,12 @@ if (isset($_POST['name'])) {
     $id = $_POST['id'];
 
     $image = $_FILES['replace-image'];
+
+    if ($image['name'] !== '') {
+        $image = uploadImage($image);
+    } else {
+        $image = $product['image'];
+    }
 
     $product = [
         'name' => $name,
@@ -38,7 +46,13 @@ if (isset($_POST['name'])) {
         'id' => $id
     ];
 
-    editProduct($product);
+    try{
+        editProduct($product);
+        header('Location: /project/product/' . $id);
+
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
 }
 
 
@@ -54,8 +68,8 @@ if (isset($_POST['name'])) {
     <main id="create-product-page">
         <?php require('functions/store_header.php') ?>
         <div class="container">
-            <form action="./functions/edit_product.php" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="id" value="<?= $product['id'] ?>">
+            <form action="./edit_product.php" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="id" id="id" value="<?= $product['id'] ?>">
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" name="name" id="name" value="<?= $product['name'] ?>" required>
@@ -76,8 +90,8 @@ if (isset($_POST['name'])) {
                 <div class="form-group">
                     <label for="category">Category</label>
                     <select name="category" id="category" required>
-                        <option value="rank" <?= $product['category']==='rank' ? 'selected' : '' ?>>Rank</option>
-                        <option value="item" <?= $product['category']==='item' ? 'selected' : '' ?>>Item</option>
+                        <option value="ranks" <?= $product['category']==='ranks' ? 'selected' : '' ?>>Rank</option>
+                        <option value="items" <?= $product['category']==='items' ? 'selected' : '' ?>>Item</option>
                     </select>
                 </div>
 
