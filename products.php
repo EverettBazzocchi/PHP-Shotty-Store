@@ -29,7 +29,7 @@ if (isset($_GET['search'])) {
 <html lang="en">
 
 <?php require('functions/head.php') ?>
-
+  
 <body>
     <?php require('functions/header.php') ?>
     <main id="products-page">
