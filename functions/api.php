@@ -336,6 +336,9 @@ function editProduct(array $product): void
  *
  * @param  array $image
  * @return string
+ * @throws Exception if file is not an image or file already exists
+ * @throws Exception if file extension is not allowed
+ * @throws Exception if there was an error uploading the file
  */
 function uploadImage(array $image): string
 {

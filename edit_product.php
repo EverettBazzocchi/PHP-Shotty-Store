@@ -12,16 +12,16 @@ if (isset($_GET['id'])) {
 $product = getProduct($id);
 
 if (!$product) {
-    echo 'Product not found.';
+    header('Location: /project/product/' . $id);
 }
 
 if (!(isset($_SESSION['user']) && (($_SESSION['user']['role'] >= 4) || ($_SESSION['user']['id'] === $product['owner_id'])))) {
-    echo 'You do not have permission to edit this product.';
+    header('Location: /project/product/' . $id);
 }
 
 if (isset($_POST['name'])) {
     if (!(isset($_SESSION['user']) && (($_SESSION['user']['role'] >= 4)))) {
-        echo 'You do not have permission to edit this product6666.';
+        header('Location: /project/product/' . $id);
     }
     $name = $_POST['name'];
     $price = $_POST['price'];

@@ -34,8 +34,7 @@ if (isset($_GET['search'])) {
     <?php require('functions/header.php') ?>
     <main id="products-page">
         <?php require('functions/store_header.php') ?>
-            <?php if (isset($_SESSION['user'])):
-            if ($_SESSION['user']['role'] >= 4): ?>
+            
             <form action="#" id="sortForm" method="post">
                 <label for="sort">Sort By:</label>
                 <select name="sort" id="sort" onchange="submit()">
@@ -47,6 +46,8 @@ if (isset($_GET['search'])) {
                     <option value="category DESC">Category Descending</option>
                 </select>
             </form>
+            <?php if (isset($_SESSION['user'])):
+            if ($_SESSION['user']['role'] >= 4): ?>
             <h2><a class="create-item-link" href="/project/create_product">Create Item</a></h2>
             <?php endif ?>
             <?php endif ?>
