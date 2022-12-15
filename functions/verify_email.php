@@ -30,7 +30,7 @@ try {
                 <?php endif; ?>
                 <h1>Thank You For Verifying Your Email</h1>
                 <p>You can now log in to your account.</p>
-                <a href="./login.php">Log In</a>
+                <a href="../login.php">Log In</a>
             </div>
         </main>
     </body>

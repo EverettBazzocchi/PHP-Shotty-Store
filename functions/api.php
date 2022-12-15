@@ -34,6 +34,9 @@ function login(string $email, string $password): void
 {
     global $db;
 
+    $email = strtolower($email);
+    $email = htmlspecialchars($email);
+
     try {
 
         $query = $db->prepare("SELECT * FROM Users WHERE email = :email");
@@ -64,6 +67,9 @@ function createAccount(string $email, string $password): void
 {
     global $db;
 
+    $email = strtolower($email);
+    $email = htmlspecialchars($email);
+
     $hash = password_hash($password, PASSWORD_DEFAULT);
 
     try {
@@ -93,6 +99,9 @@ function sendVerifyEmail(string $email): void
 {
     global $db;
 
+    $email = strtolower($email);
+    $email = htmlspecialchars($email);
+
     $query = $db->prepare("SELECT * FROM Users WHERE email = :email");
     $query->bindParam(':email', $email);
     if (!$query->execute()) {
@@ -111,7 +120,6 @@ function sendVerifyEmail(string $email): void
 
     try {
         //Server settings
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
         $mail->isSMTP();
         $mail->Host = 'smtppro.zoho.com';
         $mail->SMTPAuth = true;
@@ -153,6 +161,8 @@ function verifyEmail(string $token): void
 {
     global $db;
 
+    $token = htmlspecialchars($token);
+
     $query = $db->prepare("SELECT * FROM Email_Verification WHERE verify_code = :token");
     $query->bindParam(':token', $token);
     if (!$query->execute()) {
@@ -187,7 +197,6 @@ function testSMTP(): void
 
     try {
         //Server settings
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
         $mail->isSMTP();
         $mail->Host = 'smtppro.zoho.com';
         $mail->SMTPAuth = true;
@@ -236,6 +245,9 @@ function getProducts(string $category, string $sort = "price ASC"): array
 {
     global $db;
 
+    $category = htmlspecialchars($category);
+    $sort = htmlspecialchars($sort);
+
     if (str_ends_with($sort, "ASC")) {
         $order_by = "ORDER BY " . substr($sort, 0, strlen($sort) - 4) . " ASC;";
     } else if (str_ends_with($sort, "DESC")) {
@@ -269,6 +281,9 @@ function getProducts(string $category, string $sort = "price ASC"): array
 function getProduct(int $id): array |bool
 {
     global $db;
+
+    filter_var($id, FILTER_SANITIZE_NUMBER_INT);
+
     $query = $db->prepare("SELECT * FROM Products WHERE id = :id");
     $query->bindParam(':id', $id);
     if ($query->execute()) {
@@ -288,6 +303,8 @@ function getProduct(int $id): array |bool
  */
 function deleteProduct(int $id): void
 {
+    $id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
+
     if (!(isset($_SESSION['user']) && (($_SESSION['user']['role'] >= 5)))) {
         throw new Exception("You do not have permission to delete this product");
     }
@@ -310,6 +327,7 @@ function deleteProduct(int $id): void
  */
 function editProduct(array $product): void
 {
+
     global $db;
 
     getProduct($product['id']);
@@ -342,6 +360,7 @@ function editProduct(array $product): void
  */
 function uploadImage(array $image): string
 {
+
     $imageFolder = $_SERVER['DOCUMENT_ROOT'] . '/project/uploads/images/';
 
     $uploadFileType = strtolower(pathinfo(basename($image['name']), PATHINFO_EXTENSION));
@@ -419,6 +438,9 @@ function getUserID(): int
  */
 function getReviews(int $product_id): array
 {
+
+    $product_id = filter_var($product_id, FILTER_SANITIZE_NUMBER_INT);
+
     global $db;
     $query = "SELECT * FROM Reviews WHERE product_id = :product_id ORDER BY date_created DESC";
     $statement = $db->prepare($query);
@@ -437,6 +459,8 @@ function getReviews(int $product_id): array
  */
 function createProduct(array $products, int $user_id): void
 {
+    $user_id = filter_var($user_id, FILTER_SANITIZE_NUMBER_INT);
+
     if (!(isset($_SESSION['user']) && (($_SESSION['user']['role'] >= 5)))) {
         throw new Exception("You do not have permission to create a product");
     }

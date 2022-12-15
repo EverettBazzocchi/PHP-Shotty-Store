@@ -25,11 +25,11 @@ if (isset($_GET['email'])) {
                         <?= $error ?>
                     </div>
                 <?php endif; ?>
-                <h1>Please Verify Your Email (<?= $_SESSION['email']?>)</h1>
+                <h1>Please Verify Your Email (<?= $_GET['email']?>)</h1>
                 <p>We have sent you an email to verify your account. Please check your email and click the link to verify your account.</p>
                 <p>If you did not receive an email, please check your spam folder. If you still cannot find the email, please click the button below to resend the email.</p>
                 <form action="./please_verify.php" method="post">
-                    <input disabled hidden value="<?= $_SESSION['email']?>" name="email" />
+                    <input disabled hidden value="<?= $_GET['email']?>" name="email" />
                     <button type="submit">Resend Email</button>
                 </form>
             </div>
